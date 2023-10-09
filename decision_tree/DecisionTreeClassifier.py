@@ -11,7 +11,7 @@ class Node(object):
         :param feat_val: threshold value
         :param left: left child, with feature values below the threshold
         :param right: right child, with feature values above the threshold
-        :param res:
+        :param res: predicted class, if the node is terminal; None, otherwise
         """
         self.feat = feat
         self.left = left
@@ -36,7 +36,7 @@ class DecisionTreeClassifier(object):
         """
 
         :param y: a vector of zeros and ones
-        :return: return the prevalent value and respective number of occurences
+        :return: return the prevalent value and respective number of occurrences
         """
         num_ones = 0
         for val in y:
@@ -158,106 +158,5 @@ class DecisionTreeClassifier(object):
         assert X.ndim == 2, "X should be a numpy array of dimension 2"
         X_transformed = self._discretizer.transform(X)
         ret = np.array([self.__iterate_tree(self._tree, x) for x in X_transformed])
-        ret.shape = (-1, 1)
-        return ret
-
-
-class DecisionTreeClassifierBasic(object):
-
-    def __init__(self):
-        self._tree = None
-
-    def __prevalence_data(self, y):
-        num_ones = 0
-        for val in y:
-            num_ones += val
-        if num_ones > y.shape[0] // 2:
-            return 1, num_ones
-        else:
-            return 0, y.shape[0] - num_ones
-
-    def __feat_acc(self, x_feat, y):
-        prevalent_val_1, prevalent_freq_1 = self.__prevalence_data(y[x_feat == 1])
-        prevalent_val_0, prevalent_freq_0 = self.__prevalence_data(y[x_feat == 0])
-        if prevalent_freq_0 == 0 or prevalent_freq_1 == 0:
-            return None
-        return prevalent_freq_0 + prevalent_freq_1
-
-    def __best_feat(self, data, feats_left) -> int:
-        X, y = data
-        best_feat = None
-        best_acc = None
-        for feat in feats_left:
-            acc = self.__feat_acc(X[feat], y)
-            if acc is not None:
-                if best_feat is None or acc > best_acc:
-                    best_feat = feat
-                    best_acc = acc
-        return best_feat
-
-    # @staticmethod
-    def __partition(self, data, feat):
-        X, y = data
-        data_true = X[:, X[feat] == 1], y[X[feat] == 1]
-        data_false = X[:, X[feat] == 0], y[X[feat] == 0]
-        return data_true, data_false
-
-    def __process(self, data, feats_left, cur_depth, max_depth=-1):
-        X, y = data
-        prevalent_val, prevalent_freq = self.__prevalence_data(y)
-        if feats_left is None:
-            return Node(res=prevalent_val)
-        if prevalent_freq == 0 or prevalent_freq == y.shape[0]:
-            return Node(res=prevalent_val)
-        if cur_depth == max_depth:
-            return Node(res=prevalent_val)
-        f = self.__best_feat(data, feats_left)
-        if f is None:
-            return Node(res=prevalent_val)
-        data_true, data_false = self.__partition(data, f)
-        return Node(feat=f,
-                    left=self.__process(data_true, feats_left[feats_left != f], cur_depth+1, max_depth),
-                    right=self.__process(data_false, feats_left[feats_left != f], cur_depth+1, max_depth))
-
-    def fit(self, X, y, max_depth=-1):
-        """
-
-        :param X: numpy array of shape (n_examples, n_features) - data
-        :param y: numpy array of shape (n_examples, 1), contains 0s and 1s - labels
-        :param max_depth: int, maximal depth of the tree; if max_depth<0 then depth isn't bounded
-        """
-        if not isinstance(X, np.ndarray):
-            wrn.warn("X is not a numpy array. Behaviour is undefined")
-        if not isinstance(y, np.ndarray):
-            wrn.warn("y is not a numpy array. Behaviour is undefined")
-        assert X.ndim == 2 and y.ndim == 2, "X and y should be numpy arrays of dimension 2"
-        assert X.shape[0] == y.shape[0], "X and y should have the same number of rows"
-        assert y.shape[1] == 1, "y should have exactly 1 column"
-        assert isinstance(max_depth, int), "max_depth should be an integer"
-
-        x = X.T
-        self._tree = self.__process(data=(x, y), feats_left=np.array(range(x.shape[0])),
-                                    cur_depth=0, max_depth=max_depth)
-
-    def __iterate_tree(self, tree, x):
-        if tree.res is not None:
-            return tree.res
-        if x[tree.feat] == 1:
-            return self.__iterate_tree(tree.left, x)
-        elif x[tree.feat] == 0:
-            return self.__iterate_tree(tree.right, x)
-        return None
-
-    def predict(self, X):
-        """
-
-        :param X: numpy array of shape (n_examples, n_feature) - data
-        :return: numpy array of shape (n_examples, 1) of 0s and 1s - prediction for each example;
-        if data for some row is invalid, for that row None is returned
-        """
-        if not isinstance(X, np.ndarray):
-            wrn.warn("X is not a numpy array. Behaviour is undefined")
-        assert X.ndim == 2, "X should be a numpy array of dimension 2"
-        ret = np.array([self.__iterate_tree(self._tree, x) for x in X])
         ret.shape = (-1, 1)
         return ret

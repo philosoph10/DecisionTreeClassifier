@@ -1,0 +1,40 @@
+     bmi   Age  asa_status  baseline_cancer  baseline_charlson  baseline_cvd  \
+0  19.31  59.2           1                1                  0             0   
+1  18.73  59.1           0                0                  0             0   
+2  21.85  59.0           0                0                  0             0   
+3  18.49  59.0           1                0                  1             0   
+4  19.70  59.0           1                0                  0             0   
+
+   baseline_dementia  baseline_diabetes  baseline_digestive  \
+0                  0                  0                   0   
+1                  0                  0                   0   
+2                  0                  0                   0   
+3                  0                  1                   1   
+4                  0                  0                   0   
+
+   baseline_osteoart  baseline_psych  baseline_pulmonary  ahrq_ccs  \
+0                  0               0                   0        19   
+1                  0               0                   0         1   
+2                  0               0                   0         6   
+3                  0               0                   0         7   
+4                  0               0                   0        11   
+
+   ccsComplicationRate  ccsMort30Rate  complication_rsi  dow  gender   hour  \
+0             0.183370       0.007424             -0.57    3       0   7.63   
+1             0.312029       0.016673              0.21    0       0  12.93   
+2             0.150706       0.001962              0.00    2       0   7.68   
+3             0.056166       0.000000             -0.65    2       1   7.58   
+4             0.197305       0.002764              0.00    0       0   7.88   
+
+   month  moonphase  mort30  mortality_rsi  race  complication  
+0      6          1       0          -0.43     1             0  
+1      0          1       0          -0.41     1             0  
+2      5          3       0           0.08     1             0  
+3      4          3       0          -0.32     1             0  
+4     11          0       0           0.00     1             0  
+My categorical classifier:
+Train score = 77.69046805603006%
+Test score = 77.41715066621114%
+Sklearn classifier:
+Train score = 82.79808677827127%
+Test score = 82.50768705158865%
