@@ -1,6 +1,6 @@
 import numpy as np
 import warnings as wrn
-from decision_tree import Discretizer as disc
+from decision_tree import Discretizer as Disc
 
 
 class Node(object):
@@ -128,7 +128,7 @@ class DecisionTreeClassifier(object):
         assert X.shape[0] == y.shape[0], "X and y should have the same number of rows"
         assert y.shape[1] == 1, "y should have exactly 1 column"
 
-        self._discretizer = disc.Discretizer(2)
+        self._discretizer = Disc.Discretizer(2)
         self._discretizer.fit(X)
         x = self._discretizer.transform(X)
         x = x.T

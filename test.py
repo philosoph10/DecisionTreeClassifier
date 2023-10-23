@@ -1,11 +1,12 @@
 import sys
 
 import pandas as pd
-from decision_tree import DecisionTreeClassifier as dct
+from decision_tree import DecisionTreeClassifier as decisionTree
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 
 
+# noinspection PyShadowingNames
 def score(y, y_hat):
     """
 
@@ -35,7 +36,7 @@ model.fit(X_train, y_train)
 train_res = model.predict(X_train)
 test_res = model.predict(X_test)
 
-model = dct.DecisionTreeClassifier(max_depth=5)
+model = decisionTree.DecisionTreeClassifier(max_depth=5)
 model.fit(X_train, y_train)
 train_res_dct = model.predict(X_train)
 test_res_dct = model.predict(X_test)
